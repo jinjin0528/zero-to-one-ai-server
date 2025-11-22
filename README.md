@@ -1,2 +1,1 @@
-# Zero-to-One-AI-Serverfdfdfd
-## pjh_adit_test
+# Zero-to-One-AI-Servertest
