@@ -2,7 +2,7 @@ import html
 import re
 from typing import List
 
-from naver.application.port.naver_repository_port import NaverRepositoryPort
+from naver.application.port.naver_search_port import NaverSearchPort
 from naver.domain.product import Product
 from naver.infrastructure.client import naver_api
 from naver.infrastructure.client.naver_api import NaverApiError
@@ -14,7 +14,9 @@ def _clean_title(title: str) -> str:
     return TAG_RE.sub("", html.unescape(title or ""))
 
 
-class NaverRepositoryImpl(NaverRepositoryPort):
+class NaverSearchApiAdapter(NaverSearchPort):
+    """Outbound adapter: call Naver Shopping API and map to domain products."""
+
     def search_products(self, query: str, start: int = 1, display: int = 10) -> List[Product]:
         try:
             payload = naver_api.search_products(query=query, start=start, display=display)

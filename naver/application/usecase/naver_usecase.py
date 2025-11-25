@@ -1,11 +1,11 @@
 from typing import List
 
-from naver.application.port.naver_repository_port import NaverRepositoryPort
+from naver.application.port.naver_search_port import NaverSearchPort
 from naver.domain.product import Product
 
 
 class NaverUseCase:
-    def __init__(self, repository: NaverRepositoryPort):
+    def __init__(self, repository: NaverSearchPort):
         self.repository = repository
 
     def search_products(self, query: str, start: int = 1, display: int = 10) -> List[Product]:

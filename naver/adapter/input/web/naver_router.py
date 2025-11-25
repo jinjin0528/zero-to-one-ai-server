@@ -2,14 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from naver.application.usecase.naver_usecase import NaverUseCase
 from naver.infrastructure.client.naver_api import NaverApiError
-from naver.infrastructure.repository.naver_repository_impl import NaverRepositoryImpl
 
 naver_router = APIRouter()
 
 
 def get_naver_usecase() -> NaverUseCase:
-    repository = NaverRepositoryImpl()
-    return NaverUseCase(repository)
+    # Provided via dependency override in composition root (app/main.py)
+    raise RuntimeError("NaverUseCase dependency is not wired")
 
 
 @naver_router.get("/products")
