@@ -1,5 +1,6 @@
 import re
 import time
+import json
 
 import selenium.common
 from fastapi import HTTPException
@@ -12,6 +13,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 
 
+# TODO: Need to Refactor
 def analyze_naver_shopping_product_url_and_get_html_list(product_url: str) -> List[str]:
 
     def get_number_of_reviews_registered(html: str) -> int:
@@ -44,13 +46,8 @@ def analyze_naver_shopping_product_url_and_get_html_list(product_url: str) -> Li
         review_all_selector = '#content > div > div.Q1bBXdV7RJ > div.K38C2T0Ypx > div.wKQQf4o3UG > div > a'
         # TODO: 클릭 일부 안 되는 것은 어떻게 할 것인가?
         # brand 대부분) #content > div > div.Q1bBXdV7RJ > div.K38C2T0Ypx > div.wKQQf4o3UG > div > a
-
         # applestore) #content > div > div.ZgCvvTbvsN > div.K38C2T0Ypx > div.wKQQf4o3UG > div > a
-        # smartstore) #content > div > div.Q1bBXdV7RJ > div.K38C2T0Ypx > div.wKQQf4o3UG > div > a
-        #
 
-        # content > div > div.ZgCvvTbvsN > div.K38C2T0Ypx > div.wKQQf4o3UG > div > a
-        # //*[@id="content"]/div/div[3]/div[1]/div[1]/div/a
         driver.find_element(By.CSS_SELECTOR, review_all_selector).click()
         time.sleep(1)
 
@@ -109,7 +106,8 @@ def parse_reviews_from_html_list(review_html_list: List[str]) -> dict:
     print(f'reviews: {reviews_dict}')
     return reviews_dict
 
-def get_naver_shopping_product_reviews(product_url: str) -> dict:
+def get_naver_shopping_product_reviews(product_url: str) -> str:
     naver_shopping_product_review_html_list = analyze_naver_shopping_product_url_and_get_html_list(product_url)
     reviews_dictionary = parse_reviews_from_html_list(naver_shopping_product_review_html_list)
-    return reviews_dictionary
+    reviews_json = json.dumps(reviews_dictionary)
+    return reviews_json

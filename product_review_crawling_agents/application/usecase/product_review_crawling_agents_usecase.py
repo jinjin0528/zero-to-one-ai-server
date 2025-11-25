@@ -17,5 +17,6 @@ class ProductReviewAgentsUseCase:
             cls.__instance = cls()
         return cls.__instance
 
+    # TODO: 목적별로 UseCase 분리
     async def crawling_naver_review_agents(self, product_url: str):
         return get_naver_shopping_product_reviews(product_url)
