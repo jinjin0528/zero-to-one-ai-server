@@ -4,11 +4,12 @@ from review.adapter.output.llm_adapter import LLMAdapter
 from review.application.usecase.summarize_usecase import SummarizeUseCase
 from review.infrastructure.client.openai_client import OpenAIClient
 from config.openai.config import openai_client
+from review.application.usecase.preprocess_usecase import PreprocessUseCase
 
 review_router = APIRouter()
 client = OpenAIClient(openai_client)
+preprocess_usecase = PreprocessUseCase()
 summerizeUsecase = SummarizeUseCase(LLMAdapter(client))
-
 
 @review_router.get("/go")
 def test_review():
@@ -47,7 +48,9 @@ def test_review():
     ]
 
     # JSON 문자열로 변환
-    reviews_json_str = json.dumps(preprocessed_reviews, ensure_ascii=False)
+    # reviews_json_str = json.dumps(preprocessed_reviews, ensure_ascii=False)
+    preprocess_result = preprocess_usecase.execute(preprocessed_reviews)
+    reviews_json_str = preprocess_result["json_payload"]
     product_name = "샘플 상품"
     product_price = "25000원"
 
@@ -59,3 +62,8 @@ def test_review():
     print(review_summary)
     print("==========================")
 
+    return {
+        "preprocessed": json.loads(reviews_json_str),
+        "summary": review_summary,
+        "stats": preprocess_result["stats"],
+    }
