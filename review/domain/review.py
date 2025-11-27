@@ -23,5 +23,5 @@ class ProcessedReview:
 
     @property
     def is_valid(self) -> bool:
-        """유효한 리뷰인지 (최소 2단어 이상)"""
+        """유효한 리뷰인지 확인 (최소 2단어 이상)"""
         return len(self.tokens) >= 2 and len(self.cleaned_text) >= 5
