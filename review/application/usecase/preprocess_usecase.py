@@ -6,7 +6,7 @@ from typing import Dict, Iterable, List, Sequence
 EMOJI_PATTERN = re.compile(r"[\U00010000-\U0010FFFF]", flags=re.UNICODE)
 HTML_TAG_PATTERN = re.compile(r"<[^>]+>")
 WHITESPACE_PATTERN = re.compile(r"\s+")
-
+REPETITION_PATTERN = re.compile(r"(.)\1{1,}")
 
 class PreprocessUseCase:
     """
@@ -96,6 +96,7 @@ class PreprocessUseCase:
         text = EMOJI_PATTERN.sub(" ", text)
         text = re.sub(r"[^0-9A-Za-z가-힣 ,.!?~]+", " ", text)
         text = WHITESPACE_PATTERN.sub(" ", text).strip()
+        text = self._normalize_repetitions(text)
         return text
 
     def _passes_filters(self, text: str) -> bool:
@@ -120,6 +121,13 @@ class PreprocessUseCase:
         ]
         base_patterns.extend(re.compile(rf"^{re.escape(token)}+$", re.IGNORECASE) for token in self.noise_tokens)
         return base_patterns
+
+    def _normalize_repetitions(self, text: str) -> str:
+        """Collapse character repetitions (e.g., 오오오오 → 오, ㅋㅋㅋㅋ → ㅋ)."""
+        # Limit repeated punctuation to a single character
+        text = re.sub(r"([.!?~])\1{1,}", r"\1", text)
+        # Collapse any other repeated character (including Hangul) to a single occurrence
+        return REPETITION_PATTERN.sub(r"\1", text)
 
     def _split_sentences(self, text: str) -> List[str]:
         if not text:
